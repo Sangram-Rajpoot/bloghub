@@ -1,4 +1,9 @@
 package com.bloghub.repository;
 
-public interface CategoryRespository {
+import com.bloghub.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+    boolean exitsByCatName(String catName);
+
 }
