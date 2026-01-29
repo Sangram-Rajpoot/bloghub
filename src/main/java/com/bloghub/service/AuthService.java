@@ -1,6 +1,7 @@
 package com.bloghub.service;
 
 import com.bloghub.dto.AuthResponseDto;
+import com.bloghub.dto.LoginRequestDto;
 import com.bloghub.dto.RegisterRequestDto;
 import com.bloghub.entity.Author;
 import com.bloghub.exception.ResourceAlreadyExitsException;
@@ -51,7 +52,7 @@ public class AuthService {
 
     }
 
-    public AuthResponseDto login(RegisterRequestDto request, HttpSession session) {
+    public AuthResponseDto login(LoginRequestDto request, HttpSession session) {
         Author author = authRepo.findByEmail(request.getEmail())//This line attempts to find an Author entity in the database that matches the provided email address.
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid email or password"));//If no matching author is found, it throws a ResourceAlreadyExitsException with the message "Invalid email or password".
 

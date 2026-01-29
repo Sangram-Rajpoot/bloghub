@@ -1,6 +1,7 @@
 package com.bloghub.controller;
 
 import com.bloghub.dto.AuthResponseDto;
+import com.bloghub.dto.LoginRequestDto;
 import com.bloghub.dto.RegisterRequestDto;
 import com.bloghub.service.AuthService;
 import jakarta.servlet.http.HttpSession;
@@ -33,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/login")
     //This annotation indicates that this method will handle HTTP POST requests sent to the /login endpoint
-    public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid RegisterRequestDto request, HttpSession session) {//This method handles HTTP requests for user login. It takes a RegisterRequestDto object as input, which is validated using the @Valid annotation, and an HttpSession object to manage the user's session.
+    public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid LoginRequestDto request, HttpSession session) {//This method handles HTTP requests for user login. It takes a RegisterRequestDto object as input, which is validated using the @Valid annotation, and an HttpSession object to manage the user's session.
         AuthResponseDto response = authService.login(request, session);//This line calls the login method of the AuthService, passing the request object and session, and stores the returned AuthResponseDto in the response variable.
         return new ResponseEntity<>(response, HttpStatus.OK);//This line creates a new ResponseEntity object containing the response and an HTTP status code of 200 (OK), indicating that the login was successful.
     }
