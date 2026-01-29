@@ -26,4 +26,3 @@ public class PostController {
         // Implementation for creating a post
         return ResponseEntity.ok().build();
     }
-}
