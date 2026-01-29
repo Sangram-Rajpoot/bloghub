@@ -70,7 +70,7 @@ public class PostService {
     }
 
 
-    public Page<PostResponseDto> getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Page<PostResponseDto> getAllPostsWithPagination(int pageNo, int pageSize, String sortBy, String sortDir) {
         //Create Sort object
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.DESC.name()) ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         //Create Pageable instance
@@ -97,15 +97,12 @@ public class PostService {
 
 
     public Post getPostById(Long postId) {// Method to get a post by ID
-        Post post = postRepository.findById(postId).orElse(null);// Fetch post from repository
-        if (post == null) {// Check if post is null
-            throw new ResourceNotFoundException("Post not found with ID: " + postId);
-        }
-        return post;// Return the fetched post
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + postId));
     }
 
 
-    public List<Post> searchPostsByTitleOrContent(String keyword) {// Method to search posts by title or content
+    public List<Post> searchPosts(String keyword) {// Method to search posts by title or content
         return postRepository.findByTitleContainingOrContentContaining(keyword.toLowerCase(), keyword.toLowerCase());// Search and return matching posts
     }
 
@@ -118,12 +115,13 @@ public class PostService {
         return postRepository.findByAuthor(author);// Fetch and return posts by author
     }
 
-
+    @Transactional
     public Post updatePost(Long postId, PostUpdateDto postUpd) {// Method to update a post
         Post post = getPostById(postId);// Fetch existing post
 
         if (postUpd == null || (postUpd.getTitle() == null && postUpd.getAuthorId() == null && postUpd.getCategoryId() == null && postUpd.getContent() == null)) {
-            throw new RuntimeException("At least one field must be provided for update");
+            throw new IllegalArgumentException("At least one field must be provided for update");
+
         }
         if (postUpd.getTitle() != null) {
             post.setTitle(postUpd.getTitle());// Update title if provided
@@ -146,6 +144,7 @@ public class PostService {
         return postRepository.save(post);// Save and return updated post
     }
 
+    @Transactional
     public void deletePost(Long postId) {// Method to delete a post
         Post post = getPostById(postId);// Fetch existing post
         postRepository.delete(post);// Delete the fetched post
